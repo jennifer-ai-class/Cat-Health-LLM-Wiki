@@ -76,7 +76,11 @@ LLM_Wiki/
 
 ## 三、 教學 HTML 簡報成果
 
-- **簡報成果路徑**：[`presentation/cat_health_guide.html`](file:///Users/ryanyang/Downloads/LLM_Wiki/presentation/cat_health_guide.html)
+- **🌟 官方正式線上網站網址 (GitHub Pages 直開網站)**：  
+  👉 [**https://jennifer-ai-class.github.io/Cat-Health-LLM-Wiki/**](https://jennifer-ai-class.github.io/Cat-Health-LLM-Wiki/)  
+  *(點擊直接進入 14 頁動漫風互動教學網站，支援鍵盤翻頁、補水精算機與 FGS 疼痛點選量表！)*
+- **GitHub 原始碼檔案連結**：  
+  👉 [`presentation/cat_health_guide.html`](https://github.com/jennifer-ai-class/Cat-Health-LLM-Wiki/blob/main/presentation/cat_health_guide.html)
 - **視覺與設計特點**：
   1. **動漫明亮清爽風 (Anime Light & Clean UI)**：採用米白底色（`#FFFDF9`）與日系動漫波點網點，搭配 3px 漫畫線框與立體投影，視覺溫暖親和，消除醫療冰冷焦慮。
   2. **提綱挈領的開篇大綱 (Outline Roadmap)**：首創「貓咪全方位健康守護大地圖（5 大核心維度）」，為新手建立從飲食水分、體重代謝、腎病泌尿、口腔心臟到疼痛急症的完整認知地圖。
