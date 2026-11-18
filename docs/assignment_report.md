@@ -59,9 +59,11 @@ LLM_Wiki/
 ├── presentation/              # Layer 3: 教學型 HTML 簡報成果
 │   └── cat_health_guide.html  # 🌟 14 頁動漫明亮風全方位教學簡報 (含大綱/時間軸/決策樹/計算機)
 ├── pdf_reports/               # 📥 專門存放接收到的貓咪健檢 PDF / 檢驗資料夾
+│   ├── Cat_Health_C02_Suspected_Chronic_Kidney_Disease.pdf # 🌟 實測：英文專業健檢 PDF 報告
 │   ├── sample_mimi_bloodwork.pdf      # 範例：咪咪血液生化檢驗 PDF
 │   └── sample_kuro_renal_stage3.txt   # 範例：黑寶腎衰檢驗報告
 ├── html_reports/              # 📤 專門存放自動生成對應的 HTML 診斷分析資料夾
+│   ├── Cat_Health_C02_Suspected_Chronic_Kidney_Disease.html # 🌟 對應產出：全繁中動漫風臨床報告 (IRIS Stage 3)
 │   ├── sample_mimi_bloodwork.html     # 對應產出：咪咪 IRIS Stage 2 視覺化分析
 │   └── sample_kuro_renal_stage3.html  # 對應產出：黑寶 IRIS Stage 3 視覺化分析
 ├── tools/                     # 工具箱
@@ -166,7 +168,8 @@ flowchart TD
 
 ### 2. 衍生工具實際運行記錄
 - **健檢 PDF 轉 HTML 分析模組批次實測 (`pdf_reports/` → `html_reports/`)**：
-  直接執行 `python3 tools/health_report_analyzer.py`，系統自動掃描 `pdf_reports/` 中的貓咪健康檔案（包含原生 PDF 檔 `sample_mimi_bloodwork.pdf` 與 `sample_kuro_renal_stage3.txt`），分別對標 IRIS 國際分期標準，自動在 `html_reports/` 生成對應的視覺化 HTML 診斷報告：
+  直接執行 `python3 tools/health_report_analyzer.py`，系統自動掃描 `pdf_reports/` 中的貓咪健康檔案（支援英文原生 PDF 檔、中文檢驗單與文字報告），分別對標 IRIS 國際分期標準，自動在 `html_reports/` 生成對應的視覺化 HTML 診斷報告：
+  - `pdf_reports/Cat_Health_C02_Suspected_Chronic_Kidney_Disease.pdf` → [`html_reports/Cat_Health_C02_Suspected_Chronic_Kidney_Disease.html`](file:///Users/ryanyang/Downloads/LLM_Wiki/html_reports/Cat_Health_C02_Suspected_Chronic_Kidney_Disease.html)（實測英文 PDF 轉全繁中動漫報告，精準判定 Olive 11 歲母貓為 IRIS Stage 3，自動轉譯英文醫囑並對標 18 項數值）
   - `pdf_reports/sample_mimi_bloodwork.pdf` → [`html_reports/sample_mimi_bloodwork.html`](file:///Users/ryanyang/Downloads/LLM_Wiki/html_reports/sample_mimi_bloodwork.html)（精準判定為 IRIS Stage 2 輕度腎病）
   - `pdf_reports/sample_kuro_renal_stage3.txt` → [`html_reports/sample_kuro_renal_stage3.html`](file:///Users/ryanyang/Downloads/LLM_Wiki/html_reports/sample_kuro_renal_stage3.html)（精準判定為 IRIS Stage 3 中度腎病，並觸發低血鉀警告）
 - **對話分流模組實測**：
