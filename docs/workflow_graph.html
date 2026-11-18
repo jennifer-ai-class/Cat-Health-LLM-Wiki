@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>🐾 LLM-Wiki 系統流程架構圖 (Dual-Loop Graph)</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&family=Quicksand:wght@700&display=swap');
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: #FFFDF9;
+      background-image: radial-gradient(#FFD166 1.4px, transparent 1.4px);
+      background-size: 26px 26px;
+      color: #2B2D42;
+      padding: 40px 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      max-width: 1000px;
+      width: 100%;
+      background: #FFFFFF;
+      border: 3px solid #2B2D42;
+      border-radius: 24px;
+      padding: 35px 40px;
+      box-shadow: 6px 6px 0px #2B2D42;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #2B2D42;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    p.sub {
+      color: #6C757D;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+    }
+    .mermaid {
+      background: #F8FAFC;
+      border: 2px dashed #CBD5E1;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+    .desc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+    .desc-card {
+      background: #FFFFFF;
+      border: 2px solid #2B2D42;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 3px 3px 0px #2B2D42;
+    }
+    .desc-card h3 {
+      font-size: 1.15rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .desc-card p, .desc-card li {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #333;
+      font-weight: 700;
+    }
+    .badge-loop {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 900;
+      border: 1.5px solid #2B2D42;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🐾 LLM-Wiki 雙環回饋系統流程圖 (Dual-Loop Graph)</h1>
+    <p class="sub">解耦「知識沉澱 (Wiki)」與「教學表現 (Presentation)」，落實 Shift-Left 檢查前移機制</p>
+
+    <!-- Mermaid Visual Diagram -->
+    <div class="mermaid">
+    flowchart TD
+      subgraph Loop1 ["🔁 循環一：Wiki 增量編譯循環 (Ingestion Loop)"]
+          A["📥 原始醫學文獻匯入 (Raw Sources)"] --> B["🔍 核心醫學概念與數值抽取"]
+          B --> C{"🤝 先討論節點: 與人類確認重點?"}
+          C -- "需調整權重/補充面向" --> B
+          C -- "確認通過" --> D["📝 編譯寫入結構化 Wiki Page"]
+          D --> E{"🛡️ 拓撲與雙向鏈結審查 (Lint Check)"}
+          E -- "發現斷鏈/孤立頁面" --> D
+          E -- "驗證無誤 (100% 完整)" --> F["📚 更新 index.md 索引與 log.md 日誌"]
+      end
+
+      subgraph Loop2 ["🎨 循環二：產品生成與檢驗循環 (Generation & Evaluation Loop)"]
+          F --> G["📖 檢索 Wiki 知識並擬定教學大綱"]
+          G --> H{"⚖️ Shift-Left 閘門: 大綱受眾適配與風格審查?"}
+          H -- "生硬術語過多/缺乏通俗比喻" --> G
+          H -- "審查通過 (生活化+明亮動漫風)" --> I["💻 渲染 14 頁互動式 HTML 簡報與分析報告"]
+          I --> J{"🧪 技術驗收: JS 腳本/計算機/CSS 排版?"}
+          J -- "腳本錯誤/樣式破版" --> I
+          J -- "驗收通過" --> K["🚀 最終成果交付與 GitHub 發布"]
+      end
+
+      style Loop1 fill:#FEF3C7,stroke:#B45309,stroke-width:2px,stroke-dasharray: 5 5
+      style Loop2 fill:#E0F2FE,stroke:#0369A1,stroke-width:2px,stroke-dasharray: 5 5
+      style C fill:#FFE5EC,stroke:#D90429,stroke-width:2px
+      style H fill:#FFE5EC,stroke:#D90429,stroke-width:2px
+      style K fill:#D8F3DC,stroke:#1B4332,stroke-width:3px
+    </div>
+
+    <div class="desc-grid">
+      <div class="desc-card" style="border-top: 8px solid #F59E0B;">
+        <span class="badge-loop" style="background:#FEF3C7; color:#B45309;">循環一說明</span>
+        <h3>📚 知識庫編譯循環</h3>
+        <p>• <b>重複執行</b>：每匯入一篇新文獻（如水分、糖尿病、心臟病）即重複此循環一次。<br>
+        • <b>檢查機制</b>：在寫入前「先討論確認」，寫入後以 Lint 工具檢測斷鏈與孤立頁面。<br>
+        • <b>設計理由</b>：確保進入知識庫的事實 100% 正確，避免將錯誤資訊擴散至下游。</p>
+      </div>
+
+      <div class="desc-card" style="border-top: 8px solid #0284C7;">
+        <span class="badge-loop" style="background:#E0F2FE; color:#0369A1;">循環二說明</span>
+        <h3>🎨 產品生成與檢驗循環</h3>
+        <p>• <b>重複執行</b>：根據受眾理解難度在大綱層級迭代調校。<br>
+        • <b>檢查機制 (Shift-Left)</b>：將檢查前移至「大綱與風格審查」，先核對通俗比喻與動漫風規範，確認才寫代碼。<br>
+        • <b>設計理由</b>：杜絕在幾百行 HTML 中重構知識的痛苦，確保一次生成即成功。</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+</body>
+</html>
