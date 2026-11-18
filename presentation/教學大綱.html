@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐾 喵星人全方位健康守護地圖！(LLM-Wiki 動漫風教學簡報)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800;900&family=Quicksand:wght@600;700&display=swap');
+
+    :root {
+      --bg: #FFFDF9;
+      --card-bg: #FFFFFF;
+      --border-dark: #2B2D42;
+      --text-main: #2B2D42;
+      --text-muted: #6C757D;
+      --pink: #FF6B8B;
+      --yellow: #FFD166;
+      --blue: #4EA8DE;
+      --green: #06D6A0;
+      --orange: #FB5607;
+      --purple: #8338EC;
+      --shadow: 4px 4px 0px #2B2D42;
+      --shadow-sm: 2px 2px 0px #2B2D42;
+      --shadow-lg: 6px 6px 0px #2B2D42;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'M PLUS Rounded 1c', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      background-image: radial-gradient(#FFD166 1.4px, transparent 1.4px);
+      background-size: 26px 26px;
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Rainbow Progress Bar */
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: #E2E8F0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      border-bottom: 2px solid var(--border-dark);
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--pink), var(--yellow), var(--green), var(--blue), var(--purple));
+      transition: width 0.3s ease;
+    }
+
+    /* Presentation Canvas */
+    .deck-container {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .slide {
+      position: absolute;
+      width: 94%;
+      max-width: 1100px;
+      min-height: 600px;
+      max-height: 86vh;
+      overflow-y: auto;
+      background: var(--card-bg);
+      border: 3px solid var(--border-dark);
+      border-radius: 26px;
+      padding: 35px 44px;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      transform: scale(0.96) translateY(15px);
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+      z-index: 10;
+    }
+
+    /* Anime Badges and Typography */
+    .slide-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 900;
+      background: #FFE5EC;
+      color: #D90429;
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 10px;
+      color: var(--border-dark);
+    }
+
+    h2 {
+      font-size: 1.85rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      color: var(--border-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p.subtitle {
+      font-size: 1.02rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    /* Grids & Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 12px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .info-card {
+      background: #FFFFFF;
+      border: 2.5px solid var(--border-dark);
+      border-radius: 18px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      transition: all 0.2s;
+    }
+    .info-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 6px 6px 0px var(--border-dark);
+    }
+
+    .info-card h3 {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--border-dark);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .info-card p, .info-card li {
+      font-size: 0.9rem;
+      color: #333;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .info-card ul {
+      padding-left: 18px;
+      margin-top: 6px;
+    }
+
+    /* Visual Timeline Graph (類型 1) */
+    .timeline-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 16px;
+      position: relative;
+    }
+
+    .timeline-card {
+      background: #FFFFFF;
+      border: 2.5px solid var(--border-dark);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .timeline-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 900;
+      border: 1.5px solid var(--border-dark);
+      margin-bottom: 8px;
+    }
+
+    .stage-baby { border-top: 8px solid var(--pink); }
+    .stage-baby .timeline-badge { background: #FFE5EC; color: #D90429; }
+
+    .stage-adult { border-top: 8px solid var(--blue); }
+    .stage-adult .timeline-badge { background: #E0F2FE; color: #0369A1; }
+
+    .stage-mature { border-top: 8px solid var(--yellow); }
+    .stage-mature .timeline-badge { background: #FEF3C7; color: #B45309; }
+
+    .stage-senior { border-top: 8px solid var(--purple); }
+    .stage-senior .timeline-badge { background: #F3E8FF; color: #7E22CE; }
+
+    .timeline-card h4 {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--border-dark);
+      margin-bottom: 8px;
+    }
+
+    .timeline-card ul {
+      padding-left: 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    /* Visual Decision Flowchart (類型 2) */
+    .flowchart-box {
+      background: #F8FAFC;
+      border: 2.5px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 22px;
+      margin-top: 15px;
+      box-shadow: var(--shadow);
+    }
+
+    .flow-node {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .flow-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 14px;
+    }
+
+    .flow-branch {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .flow-branch h4 {
+      font-size: 0.95rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Clear High-Contrast Tables */
+    .clear-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 6px;
+      margin-top: 10px;
+    }
+
+    .clear-table th {
+      background: #F1FAEE;
+      color: var(--border-dark);
+      font-weight: 900;
+      padding: 8px 12px;
+      border-top: 2px solid var(--border-dark);
+      border-bottom: 2px solid var(--border-dark);
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .clear-table th:first-child { border-left: 2px solid var(--border-dark); border-radius: 8px 0 0 8px; }
+    .clear-table th:last-child { border-right: 2px solid var(--border-dark); border-radius: 0 8px 8px 0; }
+
+    .clear-table td {
+      background: #FFFFFF;
+      padding: 10px 12px;
+      border-top: 2px solid #E2E8F0;
+      border-bottom: 2px solid #E2E8F0;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #2D3748;
+    }
+    .clear-table td:first-child { border-left: 2px solid #E2E8F0; border-radius: 10px 0 0 10px; font-weight: 900; }
+    .clear-table td:last-child { border-right: 2px solid #E2E8F0; border-radius: 0 10px 10px 0; }
+
+    /* Pill Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      border: 1.5px solid var(--border-dark);
+      box-shadow: 1px 1px 0px var(--border-dark);
+    }
+    .badge-danger { background: #FFCCD5; color: #9B001F; }
+    .badge-warning { background: #FFF3CD; color: #855400; }
+    .badge-success { background: #D8F3DC; color: #1B4332; }
+
+    /* Interactive Calculator */
+    .calc-box {
+      background: #F8F9FA;
+      border: 2.5px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 18px 22px;
+      margin-top: 12px;
+      box-shadow: var(--shadow);
+    }
+    .calc-row {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .calc-row label {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--border-dark);
+      min-width: 130px;
+    }
+    .calc-row input {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      color: var(--border-dark);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 900;
+      width: 120px;
+      box-shadow: var(--shadow-sm);
+    }
+    .calc-result-grid {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .result-item .val {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--blue);
+      font-family: 'Quicksand', sans-serif;
+    }
+    .result-item .lbl {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* FGS Evaluator */
+    .fgs-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #F8F9FA;
+      border: 2px solid var(--border-dark);
+      border-radius: 10px;
+      margin-bottom: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+    .fgs-row span { font-size: 0.9rem; font-weight: 800; }
+    .fgs-buttons { display: flex; gap: 5px; }
+    .fgs-btn {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      color: var(--border-dark);
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 800;
+      transition: all 0.2s;
+    }
+    .fgs-btn.active {
+      background: var(--purple);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Bottom Navigation Controls */
+    .controls {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: #FFFFFF;
+      border-top: 3px solid var(--border-dark);
+      z-index: 50;
+    }
+
+    .nav-btn {
+      background: #FFFFFF;
+      border: 2.5px solid var(--border-dark);
+      color: var(--border-dark);
+      padding: 8px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--yellow);
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px var(--border-dark);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .slide-counter {
+      color: var(--border-dark);
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .wiki-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      background: #F1F5F9;
+      padding: 3px 10px;
+      border-radius: 6px;
+      border: 1.5px solid #CBD5E1;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .slide { padding: 20px; min-height: 520px; }
+      .grid-2, .grid-3, .grid-4, .grid-5, .timeline-container, .flow-grid-3 { grid-template-columns: 1fr; }
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.35rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Rainbow Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Slides Container -->
+  <div class="deck-container">
+
+    <!-- Slide 1: Cover -->
+    <div class="slide active" data-index="1">
+      <div class="slide-tag">✦ LLM-Wiki 知識庫全域教學 ✦</div>
+      <h1>喵星人全方位健康守護大作戰！🐾<br><span style="font-size:1.6rem; color:var(--pink);">新手貓奴的一站式健康解讀地圖</span></h1>
+      <p class="subtitle">從全景大綱、年齡健檢時間軸到糖尿病、心血管血栓與致命急症，為愛貓打造完整防護網！</p>
+      
+      <div class="grid-4" style="margin-top: 25px;">
+        <div class="info-card" style="border-top: 8px solid var(--blue);">
+          <h3>💧 水分與泌尿</h3>
+          <p>沙漠遺傳、每日需水量精算、自發性膀胱炎與公貓急症。</p>
+        </div>
+        <div class="info-card" style="border-top: 8px solid var(--yellow);">
+          <h3>🩺 代謝與慢性病</h3>
+          <p>糖尿病果糖胺指標、慢性腎臟病 (CKD) 早期篩檢與分期。</p>
+        </div>
+        <div class="info-card" style="border-top: 8px solid var(--pink);">
+          <h3>🦷 口腔與心血管</h3>
+          <p>齒吸收 (FORL) 隱形劇痛、HCM 心肌肥厚與後肢血栓。</p>
+        </div>
+        <div class="info-card" style="border-top: 8px solid var(--purple);">
+          <h3>🚨 疼痛量化與急症</h3>
+          <p>蒙特婁 FGS 面部表情評分、百合花毒性與三級急診分流。</p>
+        </div>
+      </div>
+
+      <div class="wiki-badge">
+        📖 知識來源：依據 <code>LLM_Wiki</code> 知識庫 10 篇核心詞條與國際 WSAVA/AAFP/ISFM/IRIS 指引編譯
+      </div>
+    </div>
+
+    <!-- Slide 2: Comprehensive Outline Roadmap (核心大綱) -->
+    <div class="slide" data-index="2">
+      <div class="slide-tag">簡報核心大綱</div>
+      <h2>🗺️ 貓咪全方位健康守護大地圖 (5 大核心維度)</h2>
+      <p class="subtitle">照顧一隻貓咪不能只看單一器官！以下是專業獸醫與飼主必知的五大健康支柱：</p>
+
+      <div class="grid-5">
+        <div class="info-card" style="border-top: 8px solid var(--blue); text-align:center;">
+          <div style="font-size:2rem; margin-bottom:4px;">💧</div>
+          <h4 style="font-size:1.05rem; font-weight:900;">1. 水分代謝</h4>
+          <p style="font-size:0.82rem; margin-top:6px;">沙漠基因渴感遲鈍、尿液濃縮機能、乾糧水分陷阱。</p>
+        </div>
+        <div class="info-card" style="border-top: 8px solid var(--yellow); text-align:center;">
+          <div style="font-size:2rem; margin-bottom:4px;">💉</div>
+          <h4 style="font-size:1.05rem; font-weight:900;">2. 代謝與體重</h4>
+          <p style="font-size:0.82rem; margin-top:6px;">肥胖危機、第 2 型糖尿病、果糖胺指標、飲食逆轉。</p>
+        </div>
+        <div class="info-card" style="border-top: 8px solid var(--orange); text-align:center;">
+          <div style="font-size:2rem; margin-bottom:4px;">🩺</div>
+          <h4 style="font-size:1.05rem; font-weight:900;">3. 腎臟與泌尿</h4>
+          <p style="font-size:0.82rem; margin-top:6px;">熟齡殺手 CKD、IRIS 四期標準、公貓閉尿 24hr 危機。</p>
+        </div>
+        <div class="info-card" style="border-top: 8px solid var(--pink); text-align:center;">
+          <div style="font-size:2rem; margin-bottom:4px;">🦷</div>
+          <h4 style="font-size:1.05rem; font-weight:900;">4. 口腔與心血管</h4>
+          <p style="font-size:0.82rem; margin-top:6px;">齒吸收神經劇痛、肥厚心肌 HCM、主動脈血栓癱瘓。</p>
+        </div>
+        <div class="info-card" style="border-top: 8px solid var(--purple); text-align:center;">
+          <div style="font-size:2rem; margin-bottom:4px;">🚨</div>
+          <h4 style="font-size:1.05rem; font-weight:900;">5. 疼痛與急症</h4>
+          <p style="font-size:0.82rem; margin-top:6px;">FGS 表情量化痛苦、百合花極毒、三級就醫急症分流。</p>
+        </div>
+      </div>
+
+      <div class="info-card" style="margin-top:16px; background:#F8FAFC;">
+        <h3 style="color:var(--border-dark);">💡 飼主心智模型：從「預防」到「急症辨識」</h3>
+        <p>年輕時做好<b>「水分」與「體重口腔管理」</b>，中老年定期篩檢<b>「腎病、糖尿病與心臟」</b>，日常隨時保持對<b>「閉尿、血栓與中毒」</b>的高度警覺！</p>
+      </div>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[index.md]]</code> 知識庫全覽導覽</div>
+    </div>
+
+    <!-- Slide 3: Life-stage Timeline Graph (類型 1) -->
+    <div class="slide" data-index="3">
+      <div class="slide-tag">Graph 類型一：生命週期時間軸</div>
+      <h2>📈 貓咪一生全週期健康檢查時間軸 (Timeline Graph)</h2>
+      <p class="subtitle">貓咪每個年齡階段的身體挑戰大不同！根據生命週期安排精準健檢：</p>
+
+      <div class="timeline-container">
+        <!-- Stage 1 -->
+        <div class="timeline-card stage-baby">
+          <span class="timeline-badge">0 ~ 1 歲 幼貓發育期</span>
+          <h4>🌱 疫苗與遺傳排查</h4>
+          <ul>
+            <li>核心三合一疫苗、狂犬病</li>
+            <li>貓白血/愛滋 (FeLV/FIV) 快篩</li>
+            <li>預防性驅蟲、適齡絕育手術</li>
+            <li>建立刷牙習慣與主食罐適口性</li>
+          </ul>
+        </div>
+        <!-- Stage 2 -->
+        <div class="timeline-card stage-adult">
+          <span class="timeline-badge">1 ~ 6 歲 青年成貓期</span>
+          <h4>⚡ 泌尿、體重與齒科</h4>
+          <ul>
+            <li>每 1 年例行基本血液與理學檢查</li>
+            <li>嚴防肥胖（預防糖尿病誘發）</li>
+            <li>監控飲水習慣與砂盆排尿頻率</li>
+            <li>定期口腔探針檢查齒吸收 (FORL)</li>
+          </ul>
+        </div>
+        <!-- Stage 3 -->
+        <div class="timeline-card stage-mature">
+          <span class="timeline-badge">7 ~ 10 歲 熟齡初老期</span>
+          <h4>🩺 早期腎篩與心臟</h4>
+          <ul>
+            <li>每半年至 1 年進行全套血液生化</li>
+            <li><b>必測 SDMA 與尿比重 (USG)</b></li>
+            <li>高風險品種加驗 NT-proBNP/心超</li>
+            <li>測量收縮壓 (SBP) 防隱性高血壓</li>
+          </ul>
+        </div>
+        <!-- Stage 4 -->
+        <div class="timeline-card stage-senior">
+          <span class="timeline-badge">11 歲以上 高齡安養期</span>
+          <h4>🛡️ 慢性病綜合管理</h4>
+          <ul>
+            <li>每半年健檢：CKD 分期與控磷</li>
+            <li>排查多渴多尿 (PU/PD)：糖尿病/甲亢</li>
+            <li>退化性關節炎 (OA) 疼痛評估</li>
+            <li>提供低矮砂盆、軟墊防滑輔具</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[健檢指標與臨床判讀基準]]</code> 全年生化指標指引</div>
+    </div>
+
+    <!-- Slide 4: Hydration & Desert Ancestry -->
+    <div class="slide" data-index="4">
+      <div class="slide-tag">模組一：水分生理</div>
+      <h2>沙漠獵人的遺傳包袱：貓為什麼不愛喝水？💧</h2>
+      <p class="subtitle">源自非洲野貓的生理特質，讓家貓天生在「喝水」這件事上極其吃虧：</p>
+      
+      <div class="grid-2">
+        <div class="info-card" style="background:#FFF9FB; border-color:var(--pink);">
+          <h3 style="color:#D90429;">🏜️ 渴感中樞天生遲鈍</h3>
+          <p>野生貓靠捕食活體（肉體含水約 70%）補充水分。家貓體內即使已輕度脫水，也不會像狗一樣主動大量找水喝！猛灌水往往已是病態代償！</p>
+        </div>
+        <div class="info-card" style="background:#F0F9FF; border-color:var(--blue);">
+          <h3 style="color:#0077B6;">🧪 超強尿液濃縮機能</h3>
+          <p>健康貓尿比重（USG）可高達 > 1.035。高濃縮尿液能保水，但若長期只吃乾糧水分不足，礦物質在膀胱沉澱，便演變成<b>結晶結石與發炎</b>！</p>
+        </div>
+      </div>
+
+      <table class="clear-table" style="margin-top: 14px;">
+        <thead>
+          <tr>
+            <th>主食形態</th>
+            <th>平均含水率</th>
+            <th>以 4kg 成貓為例（每日需水約 200mL）</th>
+            <th>泌尿與腎臟負擔評估</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>全乾式乾糧 (Kibble)</b></td>
+            <td>僅約 10%</td>
+            <td>每天吃 60g 乾糧僅得 <b>6 mL</b> 水分，剩餘 194 mL 須全靠自己喝</td>
+            <td><span class="badge badge-danger">極高風險！尿液超飽和濃縮</span></td>
+          </tr>
+          <tr>
+            <td><b>主食罐 / 濕食 (Wet Food)</b></td>
+            <td>約 75% ~ 80%</td>
+            <td>每天吃 180g 主食罐自然吃進 <b>144 mL</b> 水分，直接補足 70%~90%</td>
+            <td><span class="badge badge-success">極佳！維持稀釋尿液防結石</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[貓咪水分生理與脫水評估]]</code></div>
+    </div>
+
+    <!-- Slide 5: Interactive Water Calculator -->
+    <div class="slide" data-index="5">
+      <div class="slide-tag">動手算算看</div>
+      <h2>🧮 喵星人補水計算機：算出愛貓的水分缺口！</h2>
+      <p class="subtitle">輸入貓咪體重與每天進食的乾糧、罐頭克數，即刻算出一整天還差多少水：</p>
+
+      <div class="calc-box">
+        <div class="calc-row">
+          <label>貓咪體重 (kg)：</label>
+          <input type="number" id="calcWeight" value="4.0" step="0.1" min="1" max="15" oninput="updateCalculator()">
+        </div>
+        <div class="calc-row">
+          <label>每日乾糧進食量 (g)：</label>
+          <input type="number" id="calcKibble" value="40" step="5" min="0" oninput="updateCalculator()">
+        </div>
+        <div class="calc-row">
+          <label>每日主食罐進食量 (g)：</label>
+          <input type="number" id="calcWet" value="80" step="10" min="0" oninput="updateCalculator()">
+        </div>
+
+        <div class="calc-result-grid">
+          <div class="result-item">
+            <div class="val" id="resTotal">200 mL</div>
+            <div class="lbl">每日總需水量 (50mL/kg)</div>
+          </div>
+          <div class="result-item">
+            <div class="val" id="resFood">68 mL</div>
+            <div class="lbl">從食物中自然吃進的水分</div>
+          </div>
+          <div class="result-item">
+            <div class="val" style="color: var(--pink);" id="resGap">132 mL</div>
+            <div class="lbl">今天必須額外主動喝到的水量</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top: 14px;">
+        <div class="info-card">
+          <h3>📌 誘惑喝水三大守則</h3>
+          <ul>
+            <li>水碗遠離貓砂盆與飼料碗（符合野外天性）</li>
+            <li>選用寬口淺底陶瓷碗，避免鬍鬚疲勞（Whiskers Fatigue）</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h3>⚠️ 脫水檢查：捏皮回彈試驗</h3>
+          <p>捏起後頸皮膚再放開：<br>• 瞬間平復（&lt;1秒）：水合充足良好<br>• 延遲滯留呈帳篷狀（&gt;2秒）：已達中重度脫水需送醫輸液</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Diabetes Mellitus (新項目 A) -->
+    <div class="slide" data-index="6">
+      <div class="slide-tag">模組二：內分泌與代謝疾病</div>
+      <h2>肥胖與代謝風暴：貓咪糖尿病 (Diabetes) 💉</h2>
+      <p class="subtitle">家貓超過 80% 為第 2 型糖尿病。肥胖與高碳乾糧引發胰島素阻抗，破壞胰島細胞！</p>
+
+      <div class="grid-2">
+        <div class="info-card" style="background:#FFFBF0; border-color:var(--yellow);">
+          <h3 style="color:#B45309;">🚨 經典「三多一少」警訊</h3>
+          <ul>
+            <li><b>多尿 (Polyuria)</b>：血糖破 200 mg/dL 溢出至尿液，引發滲透性利尿。</li>
+            <li><b>多渴 (Polydipsia)</b>：尿量大增導致脫水，水碗前長坐狂喝。</li>
+            <li><b>多食 (Polyphagia)</b>：細胞無法利用糖分，大腦持續感到飢餓。</li>
+            <li><b>消瘦 (Weight Loss)</b>：食量大增但體重與背脊肌肉持續流失。</li>
+          </ul>
+        </div>
+
+        <div class="info-card" style="background:#F3E8FF; border-color:var(--purple);">
+          <h3 style="color:#6B21A8;">🔬 診斷金標準：果糖胺 (Fructosamine)</h3>
+          <p>貓看診極易因緊迫使血糖飆至 200~300 mg/dL（緊迫性假高血糖！）。</p>
+          <ul style="margin-top:6px;">
+            <li><b>果糖胺</b>：代表過去 <b>2~3 週平均血糖</b>，不受短期就診緊張干擾！</li>
+            <li><b>數值判讀</b>：正常 &lt; 365 μmol/L；若 &gt; 450 且伴隨尿糖即可確診。</li>
+          </ul>
+          <p style="margin-top:8px;"><span class="badge badge-success">奇蹟</span> 早期打長效胰島素 + 低碳水濕食，有 <b>30%~50% 貓咪可徹底逆轉（臨床緩解免打針）</b>！</p>
+        </div>
+      </div>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[貓咪糖尿病與內分泌代謝]]</code>、<code>[[健檢指標與臨床判讀基準]]</code></div>
+    </div>
+
+    <!-- Slide 7: Decision Flowchart (類型 2: 多渴多尿排查) -->
+    <div class="slide" data-index="7">
+      <div class="slide-tag">Graph 類型二：症狀診斷決策樹</div>
+      <h2>🌳 症狀決策樹：貓咪突然「多喝水、多尿」怎麼判斷？</h2>
+      <p class="subtitle">貓砂盆尿塊突然變超大、頻繁在水碗前喝水？跟著決策樹一步步排查：</p>
+
+      <div class="flowchart-box">
+        <div class="flow-node" style="background:#FEF3C7; border-color:#B45309;">
+          🚨 主訴症狀：發現貓咪飲水量 &gt; 100 mL/kg 或貓砂塊直徑翻倍 (多渴多尿 PU/PD)
+        </div>
+
+        <div class="flow-grid-3">
+          <!-- Branch 1 -->
+          <div class="flow-branch" style="border-top:6px solid var(--purple);">
+            <h4>💉 檢驗 1：查血糖與果糖胺</h4>
+            <p style="font-size:0.85rem; color:#4B5563;">• 血糖 &gt; 250 且尿糖陽性 (+)<br>• 果糖胺 &gt; 400 μmol/L</p>
+            <div style="margin-top:8px; font-weight:900; color:#6B21A8;">👉 確診：貓糖尿病</div>
+            <p style="font-size:0.8rem; color:#6B7280; margin-top:4px;">處置：注射長效胰島素、切換極低碳水濕食主食。</p>
+          </div>
+
+          <!-- Branch 2 -->
+          <div class="flow-branch" style="border-top:6px solid var(--orange);">
+            <h4>🩺 檢驗 2：查 CREA / SDMA / 尿比重</h4>
+            <p style="font-size:0.85rem; color:#4B5563;">• 尿比重 USG &lt; 1.035 (等比重尿)<br>• SDMA &gt; 14 或 CREA &gt; 1.6</p>
+            <div style="margin-top:8px; font-weight:900; color:#C2410C;">👉 確診：慢性腎臟病 (CKD)</div>
+            <p style="font-size:0.8rem; color:#6B7280; margin-top:4px;">處置：IRIS 分期、嚴格飲食控磷、規律皮下輸液。</p>
+          </div>
+
+          <!-- Branch 3 -->
+          <div class="flow-branch" style="border-top:6px solid var(--blue);">
+            <h4>🧬 檢驗 3：查甲狀腺素 (Total T4)</h4>
+            <p style="font-size:0.85rem; color:#4B5563;">• 熟齡貓食慾亢進但持續消瘦<br>• T4 濃度顯著升高</p>
+            <div style="margin-top:8px; font-weight:900; color:#0369A1;">👉 確診：甲狀腺機能亢進</div>
+            <p style="font-size:0.8rem; color:#6B7280; margin-top:4px;">處置：口服抗甲狀腺藥物 (Methimazole) 或低碘配方。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[慢性腎臟病_CKD]]</code>、<code>[[貓咪糖尿病與內分泌代謝]]</code></div>
+    </div>
+
+    <!-- Slide 8: FLUTD and Tomcat Emergency -->
+    <div class="slide" data-index="8">
+      <div class="slide-tag">模組三：泌尿急症</div>
+      <h2>貓下泌尿道疾病 (FLUTD) 與公貓閉尿倒數</h2>
+      <p class="subtitle">貓砂盆是了解貓咪健康的最前線。學會分辨常態排尿與危急訊號：</p>
+
+      <div class="grid-2">
+        <div class="info-card">
+          <h3>🚨 典型「下泌尿道五大症狀」</h3>
+          <ul>
+            <li><b>頻尿</b>：反覆跑砂盆，每次僅滴出數滴或空蹲。</li>
+            <li><b>排尿疼痛</b>：蹲踞腹部緊繃、弓背發出痛苦哀鳴。</li>
+            <li><b>血尿</b>：尿液呈現淡粉紅、暗紅或帶血塊。</li>
+            <li><b>砂盆外亂尿</b>：將砂盆聯想為疼痛來源，轉移至床上或磁磚。</li>
+            <li><b>狂舔下腹部</b>：肚子與尿道口被舔到毛髮全禿。</li>
+          </ul>
+        </div>
+
+        <div class="info-card" style="background:#FFF0F3; border-color:#FF006E;">
+          <h3 style="color:#D00000;">⚠️ 公貓閉尿：致命倒數 24~48 小時</h3>
+          <p>公貓尿道狹窄細長（僅 1mm），極易被發炎黏液與結晶形成的栓子完全堵死！</p>
+          <ul style="margin-top: 6px;">
+            <li><b>12 小時</b>：膀胱緊繃膨脹如網球，劇痛難忍。</li>
+            <li><b>24 小時</b>：後向高壓爆發急性後腎性腎衰竭 (AKI)。</li>
+            <li><b>24~48 小時</b>：血鉀飆破 7.0 mmol/L，引發<b>嚴重心律不整、低體溫、心跳驟停</b>。</li>
+          </ul>
+          <p style="margin-top: 6px;"><span class="badge badge-danger">極危警戒</span> 公貓蹲盆無尿超過半天，不可觀察，立刻急診導尿！</p>
+        </div>
+      </div>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[貓下泌尿道疾病_FLUTD]]</code></div>
+    </div>
+
+    <!-- Slide 9: CKD Staging for Seniors -->
+    <div class="slide" data-index="9">
+      <div class="slide-tag">模組四：慢性病管理</div>
+      <h2>熟齡貓頭號殺手：慢性腎臟病 (CKD) 國際分期</h2>
+      <p class="subtitle">7歲以上有 30%、15歲以上高達 80% 罹患。壞死腎元無法再生，早期篩檢是唯一關鍵！</p>
+
+      <table class="clear-table">
+        <thead>
+          <tr>
+            <th>IRIS 分期</th>
+            <th>肌酸酐 CREA (mg/dL)</th>
+            <th>早期篩檢 SDMA (µg/dL)</th>
+            <th>剩餘腎功能</th>
+            <th>臨床處置核心方針</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Stage 1 (代償期)</b></td>
+            <td>&lt; 1.6</td>
+            <td>15 ~ 17</td>
+            <td>33% ~ 100%</td>
+            <td>外表無症狀，尿比重開始下降。去除腎毒藥物、維持充沛飲水。</td>
+          </tr>
+          <tr>
+            <td><b>Stage 2 (輕度受損)</b></td>
+            <td>1.6 ~ 2.8</td>
+            <td>18 ~ 25</td>
+            <td>25% ~ 33%</td>
+            <td>多渴多尿出現。介入早期處方糧，嚴格監控血磷與血壓。</td>
+          </tr>
+          <tr>
+            <td><b>Stage 3 (中度衰竭)</b></td>
+            <td>2.9 ~ 5.0</td>
+            <td>26 ~ 38</td>
+            <td>10% ~ 25%</td>
+            <td>消瘦肌少、噁心。規律居家皮下輸液（SC Fluids）、降磷劑介入。</td>
+          </tr>
+          <tr>
+            <td><b>Stage 4 (晚期尿毒)</b></td>
+            <td>&gt; 5.0</td>
+            <td>&gt; 38</td>
+            <td>&lt; 10%</td>
+            <td>嚴重尿毒貧血。以緩和安寧、維持舒適生活品質為主。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-card" style="margin-top: 12px; background:#F8FAFC;">
+        <h3 style="color: var(--blue);">🔬 為什麼 SDMA 能比肌酸酐更早預警？</h3>
+        <p>傳統肌酸酐（Creatinine）要等到腎功能喪失 <b>75%</b> 才明顯超標，且容易受肌肉萎縮影響而假性偏低。<b>SDMA 在腎功能受損 25%~40% 即提前升高</b>，能提早數月至數年抓出前期腎病！</p>
+      </div>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[慢性腎臟病_CKD]]</code>、<code>[[健檢指標與臨床判讀基準]]</code></div>
+    </div>
+
+    <!-- Slide 10: Dental and FORL (新項目 B) -->
+    <div class="slide" data-index="10">
+      <div class="slide-tag">模組五：口腔齒科疾病</div>
+      <h2>隱藏的沉默劇痛：貓齒吸收 (FORL) 與口炎 🦷</h2>
+      <p class="subtitle">超過 3 歲的成貓有 80% 患有齒科疾病。貓咪牙痛不說話，常被誤認為「挑食」！</p>
+
+      <div class="grid-2">
+        <div class="info-card" style="border-top: 8px solid var(--pink);">
+          <h3 style="color:#D90429;">🦷 貓齒吸收 (Tooth Resorption, FORL)</h3>
+          <p>• <b>自體溶牙病理</b>：自體破牙細胞失控活化，自牙根溶解牙齒硬組織，一路侵蝕至神經牙髓腔，最後牙冠崩塌！<br>
+          • <b>劇痛特徵</b>：進食甩頭、單側咀嚼、下顎劇烈顫抖（Chattering）。<br>
+          • <b>唯一處置</b>：無法洗牙或補牙修復，<b>拔牙（Extraction）是徹底解除神經劇痛的唯一解法</b>。</p>
+        </div>
+
+        <div class="info-card" style="border-top: 8px solid var(--orange);">
+          <h3 style="color:#C2410C;">🔥 慢性牙齦口炎 (FCGS)</h3>
+          <p>• <b>免疫風暴</b>：口腔黏膜對牙菌斑極端過敏排斥，後咽部呈現瀰漫性鵝卵石狀鮮紅增生與潰瘍。<br>
+          • <b>警訊特徵</b>：口臭極刺鼻、口角流帶血黏涎、抓嘴慘叫。<br>
+          • <b>日常金標準預防</b>：每日物理性刷牙是唯一有效預防牙菌斑方式，定期安排氣體麻醉全口齒科 X 光。</p>
+        </div>
+      </div>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[貓咪口腔疾病與齒吸收_FORL]]</code>、<code>[[貓咪疼痛評估與面部表情量表_FGS]]</code></div>
+    </div>
+
+    <!-- Slide 11: Cardiovascular HCM & Thrombosis (新項目 C) -->
+    <div class="slide" data-index="11">
+      <div class="slide-tag">模組六：心血管重症</div>
+      <h2>沉默的心臟殺手：肥厚性心肌病 (HCM) 與血栓 💔</h2>
+      <p class="subtitle">佔貓心臟病 85% 以上。早期聽診幾乎無雜音，初次發作常已是致命危機：</p>
+
+      <div class="grid-2">
+        <div class="info-card" style="background:#FFF5F5; border-color:#FF006E;">
+          <h3 style="color:#D00000;">🚨 一級急症：心因性肺水腫 (張口呼吸)</h3>
+          <p>左心房擴大壓力逆傳至肺微血管，引發肺泡淹水與胸水：</p>
+          <ul style="margin-top:6px;">
+            <li><b>張口呼吸 (Open-mouth breathing)</b>：健康貓絕不張口呼吸！一旦張口喘氣，代表嚴重缺氧窒息瀕死！</li>
+            <li><b>處置</b>：立即送急診氧氣艙搶救，嚴禁過度保定與緊迫。</li>
+          </ul>
+        </div>
+
+        <div class="info-card" style="background:#FFFBF0; border-color:var(--yellow);">
+          <h3 style="color:#B45309;">⚠️ 致命鞍狀血栓 (Saddle Thrombus, ATE)</h3>
+          <p>心房血塊脫落卡死後肢主動脈分岔處，呈現<b>「5P 徵象」</b>：</p>
+          <ul style="margin-top:6px;">
+            <li><b>Pain (劇痛)</b>：突發性倒地痛苦慘叫哀嚎</li>
+            <li><b>Paralysis (癱瘓)</b>：雙後肢完全癱瘓拖行</li>
+            <li><b>Pulseless (無脈搏)</b>：後肢股動脈觸摸不到搏動</li>
+            <li><b>Pallor / Poikilothermia</b>：後腳肉墊發紫且冰冷</li>
+          </ul>
+          <p style="margin-top:6px; font-weight:900; color:#D90429;">黃金搶救期僅 4 ~ 6 小時！必須立即送醫溶解血栓！</p>
+        </div>
+      </div>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[貓心肌肥大_HCM與主動脈血栓]]</code>、<code>[[貓咪急症紅旗信號總覽]]</code></div>
+    </div>
+
+    <!-- Slide 12: Pain Assessment (FGS) -->
+    <div class="slide" data-index="12">
+      <div class="slide-tag">模組七：疼痛評估量化</div>
+      <h2>讀懂貓咪的隱忍：蒙特婁面部表情量表 (FGS)</h2>
+      <p class="subtitle">貓是隱忍疼痛的高手。透過觀察 30 秒五大面部動作，客觀算出痛苦指數：</p>
+
+      <div class="grid-2">
+        <div>
+          <div class="fgs-row">
+            <span>1. 耳朵位置：</span>
+            <div class="fgs-buttons" data-item="ears">
+              <button class="fgs-btn active" onclick="setFGS('ears', 0, this)">0 朝前</button>
+              <button class="fgs-btn" onclick="setFGS('ears', 1, this)">1 微開</button>
+              <button class="fgs-btn" onclick="setFGS('ears', 2, this)">2 壓平</button>
+            </div>
+          </div>
+          <div class="fgs-row">
+            <span>2. 眼眶收緊：</span>
+            <div class="fgs-buttons" data-item="eyes">
+              <button class="fgs-btn active" onclick="setFGS('eyes', 0, this)">0 圓睜</button>
+              <button class="fgs-btn" onclick="setFGS('eyes', 1, this)">1 瞇眼</button>
+              <button class="fgs-btn" onclick="setFGS('eyes', 2, this)">2 緊閉</button>
+            </div>
+          </div>
+          <div class="fgs-row">
+            <span>3. 口套緊張：</span>
+            <div class="fgs-buttons" data-item="muzzle">
+              <button class="fgs-btn active" onclick="setFGS('muzzle', 0, this)">0 圓弧</button>
+              <button class="fgs-btn" onclick="setFGS('muzzle', 1, this)">1 微緊</button>
+              <button class="fgs-btn" onclick="setFGS('muzzle', 2, this)">2 扁平橫拉</button>
+            </div>
+          </div>
+          <div class="fgs-row">
+            <span>4. 鬍鬚走向：</span>
+            <div class="fgs-buttons" data-item="whiskers">
+              <button class="fgs-btn active" onclick="setFGS('whiskers', 0, this)">0 微垂</button>
+              <button class="fgs-btn" onclick="setFGS('whiskers', 1, this)">1 聚攏</button>
+              <button class="fgs-btn" onclick="setFGS('whiskers', 2, this)">2 筆直向前</button>
+            </div>
+          </div>
+          <div class="fgs-row">
+            <span>5. 頭部位置：</span>
+            <div class="fgs-buttons" data-item="head">
+              <button class="fgs-btn active" onclick="setFGS('head', 0, this)">0 高於肩</button>
+              <button class="fgs-btn" onclick="setFGS('head', 1, this)">1 齊肩</button>
+              <button class="fgs-btn" onclick="setFGS('head', 2, this)">2 低於肩線</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card" style="display: flex; flex-direction: column; justify-content: center; text-align: center; background:#FAF5FF; border-color:var(--purple);">
+          <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-muted);">當前 FGS 評估總分</div>
+          <div id="fgsScore" style="font-size: 3.5rem; font-weight: 900; color: var(--green); margin: 6px 0; font-family:'Quicksand';">0 / 10</div>
+          <div id="fgsStatus" style="font-size: 1rem; font-weight: 800; color: #1B4332;">狀態良好：無顯著疼痛表現 🐾</div>
+          <div style="font-size: 0.85rem; color: #4A5568; margin-top: 12px; border-top: 2px dashed #CBD5E1; padding-top: 10px; font-weight:700;">
+            ⚠️ <b>臨床處方警戒線</b>：總分 &ge; 4 分代表承受中度以上疼痛，應立即就醫排查並開立止痛！
+          </div>
+        </div>
+      </div>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[貓咪疼痛評估與面部表情量表_FGS]]</code></div>
+    </div>
+
+    <!-- Slide 13: Toxic Plants & Household Poisons -->
+    <div class="slide" data-index="13">
+      <div class="slide-tag">模組八：居家安全防線</div>
+      <h2>致命紅線：養貓家庭絕對嚴禁的極毒物質 ☠️</h2>
+      <p class="subtitle">貓肝臟缺乏解毒酵素（葡萄糖醛酸轉移酶），極微小劑量即可在短時間內致命！</p>
+
+      <div class="grid-3">
+        <div class="info-card" style="background:#FFF0F3; border-top: 8px solid var(--pink);">
+          <h3 style="color: #D90429;">☠️ 百合花屬 (Lilies)</h3>
+          <p><b>一級極毒！</b>整株花葉、花粉甚至花瓶水都有毒。舔到花粉需在 <b>18 小時黃金窗口內</b> 送醫靜脈輸液，否則 2~3 天內急性腎壞死身亡。</p>
+        </div>
+        <div class="info-card" style="background:#FFF9E6; border-top: 8px solid var(--yellow);">
+          <h3 style="color: #B25E00;">☠️ 除蟲菊精 (百滅寧)</h3>
+          <p>常見於<b>狗用體外驅蟲滴劑</b>或環境殺蟲噴劑。貓誤碰會導致神經鈉離子通道癱瘓，引發全身肌肉劇烈顫抖、抽搐甚至死亡！嚴禁貓狗共用！</p>
+        </div>
+        <div class="info-card" style="background:#F0F4FF; border-top: 8px solid var(--purple);">
+          <h3 style="color: #5A189A;">☠️ 人藥：普拿疼 / 止痛藥</h3>
+          <p>單顆小兒普拿疼即可致命！造成紅血球缺氧變黑（變性血紅素血症，黏膜呈巧克力色）與急性肝壞死。切勿擅自給貓餵人藥！</p>
+        </div>
+      </div>
+
+      <div class="info-card" style="margin-top: 14px; background: #FFF5F5; border-color: #E63946;">
+        <h3 style="color: #E63946;">⚠️ 中毒自救「三要三不」黃金原則</h3>
+        <p>
+          • <b>三要</b>：要拍照留存毒物外包裝、要爭分奪秒送急診、毛皮沾染油劑要用溫水中性洗碗精洗淨。<br>
+          • <b>三不</b>：<span style="color: #D90429; font-weight: 900;">切勿自行灌雙氧水催吐</span>（貓食道極脆弱，會造成腐蝕性破裂與吸入性肺炎）、切勿灌食用油、切勿等待觀察！
+        </p>
+      </div>
+
+      <div class="wiki-badge">參照 Wiki：<code>[[居家中毒危險與致命物質]]</code></div>
+    </div>
+
+    <!-- Slide 14: Summary & Emergency Red Flags Checklist -->
+    <div class="slide" data-index="14">
+      <div class="slide-tag">守護總結行動手冊</div>
+      <h2>飼主守護總結：三級就醫急症分流清單 🚨</h2>
+      <p class="subtitle">將知識化為直覺本能，關鍵時刻該衝急診絕不猶豫：</p>
+
+      <div class="grid-3">
+        <div class="info-card" style="background:#FFF0F3; border-top: 8px solid var(--pink);">
+          <span class="badge badge-danger">一級極危 (0-2hr 急診)</span>
+          <ul style="margin-top: 10px;">
+            <li>公貓閉尿 / 蹲盆無尿</li>
+            <li>張口呼吸、胸腹劇烈起伏喘息</li>
+            <li>突發後肢癱瘓拖行 (動脈血栓)</li>
+            <li>誤食百合或誤用狗除蟲滴劑</li>
+            <li>體溫低於 36℃ 或全身抽搐</li>
+          </ul>
+        </div>
+
+        <div class="info-card" style="background:#FFF9E6; border-top: 8px solid var(--yellow);">
+          <span class="badge badge-warning">二級危急 (4-12hr 當日門診)</span>
+          <ul style="margin-top: 10px;">
+            <li>捏皮帳篷延遲 &gt;2 秒 (中重度脫水)</li>
+            <li>連續劇烈嘔吐拒食超過 24 小時</li>
+            <li>FGS 疼痛表情評分 &ge; 4 分</li>
+            <li>糖尿病多尿合併精神嗜睡 (DKA)</li>
+          </ul>
+        </div>
+
+        <div class="info-card" style="background:#F0FFF4; border-top: 8px solid var(--green);">
+          <span class="badge badge-success">三級關注 (1-3天 預約體檢)</span>
+          <ul style="margin-top: 10px;">
+            <li>飲水或排尿量倍增 (排查 CKD/糖尿病)</li>
+            <li>進食甩頭、咀嚼慘叫 (齒吸收牙痛)</li>
+            <li>熟齡貓體重漸進消瘦、毛髮凌亂</li>
+            <li>跳躍猶豫、步態僵硬 (關節炎)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 25px;">
+        <h3 style="color: var(--border-dark); font-size: 1.35rem; font-weight: 900;">願每一隻可愛的喵星人都能平安健康長壽！🐱❤️</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 800; margin-top: 4px;">本教材由 <code>LLM_Wiki 貓咪健康知識庫</code> 編譯生成</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <div class="controls">
+    <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>← 上一頁</button>
+    <div class="slide-counter" id="slideCounter">1 / 14</div>
+    <button class="nav-btn" id="nextBtn" onclick="nextSlide()">下一頁 →</button>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 14;
+
+    function showSlide(index) {
+      if (index < 1 || index > totalSlides) return;
+      currentSlide = index;
+
+      document.querySelectorAll('.slide').forEach(s => {
+        s.classList.remove('active');
+        if (parseInt(s.getAttribute('data-index')) === currentSlide) {
+          s.classList.add('active');
+          s.scrollTop = 0;
+        }
+      });
+
+      const progress = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+
+      document.getElementById('slideCounter').innerText = `${currentSlide} / ${totalSlides}`;
+      document.getElementById('prevBtn').disabled = (currentSlide === 1);
+      document.getElementById('nextBtn').disabled = (currentSlide === totalSlides);
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) showSlide(currentSlide - 1);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      }
+    });
+
+    function updateCalculator() {
+      const weight = parseFloat(document.getElementById('calcWeight').value) || 0;
+      const kibble = parseFloat(document.getElementById('calcKibble').value) || 0;
+      const wet = parseFloat(document.getElementById('calcWet').value) || 0;
+
+      const totalNeed = Math.round(weight * 50);
+      const waterFromKibble = kibble * 0.10;
+      const waterFromWet = wet * 0.80;
+      const foodWater = Math.round(waterFromKibble + waterFromWet);
+      const gap = Math.max(0, totalNeed - foodWater);
+
+      document.getElementById('resTotal').innerText = `${totalNeed} mL`;
+      document.getElementById('resFood').innerText = `${foodWater} mL`;
+      document.getElementById('resGap').innerText = `${gap} mL`;
+    }
+
+    const fgsValues = { ears: 0, eyes: 0, muzzle: 0, whiskers: 0, head: 0 };
+
+    function setFGS(item, val, btn) {
+      fgsValues[item] = val;
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.fgs-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const total = Object.values(fgsValues).reduce((a, b) => a + b, 0);
+      const scoreElem = document.getElementById('fgsScore');
+      const statusElem = document.getElementById('fgsStatus');
+      scoreElem.innerText = `${total} / 10`;
+
+      if (total >= 4) {
+        scoreElem.style.color = '#FF006E';
+        statusElem.innerHTML = '🚨 <span style="color: #D00000; font-weight: 900;">超過行動閾值 (&ge;4)：正承受顯著痛苦，需醫療介入止痛！</span>';
+      } else if (total >= 2) {
+        scoreElem.style.color = '#FB5607';
+        statusElem.innerHTML = '⚠️ <span style="color: #B25E00; font-weight: 900;">疑似輕中度不適：請密切追蹤面部表情與進食姿態</span>';
+      } else {
+        scoreElem.style.color = '#06D6A0';
+        statusElem.innerHTML = '🟢 <span style="color: #1B4332; font-weight: 900;">狀態良好：無顯著疼痛表現 🐾</span>';
+      }
+    }
+
+    updateCalculator();
+    showSlide(1);
+  </script>
+</body>
+</html>

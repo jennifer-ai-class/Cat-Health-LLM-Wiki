@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Health Report Analyzer & HTML Report Generator (Anime Light Style)
-Extracts bloodwork, urinalysis, and metabolic markers from PDF / text reports,
-benchmarks against LLM-Wiki standards (IRIS CKD & Diabetes Mellitus), and generates bright, anime-styled HTML reports.
+Health Report Analyzer & HTML Report Generator (Anime Light Style - Clean UTF-16-BE Decoder)
+Accurately decodes veterinary PDF records (including UniCNS-UTF16-H encoded Chinese texts),
+extracts patient demographics, CBC, Chemistry, and Urinalysis,
+benchmarks against LLM-Wiki IRIS CKD & Diabetes standards, and generates clear, bright anime HTML reports.
 """
 
 import os
@@ -23,17 +24,21 @@ REF_RANGES = {
     'GLU': {'name': '血糖 (Glucose)', 'unit': 'mg/dL', 'min': 70.0, 'max': 150.0, 'cat': '代謝能量', 'desc': '緊張可能引發緊迫高血糖，需搭配果糖胺區別糖尿病'},
     'FRUCT': {'name': '果糖胺 (Fructosamine)', 'unit': 'μmol/L', 'min': 190.0, 'max': 365.0, 'cat': '血糖回溯', 'desc': '反映過去 2~3 週平均血糖，判讀糖尿病之黃金指標'},
     'ALT': {'name': '丙胺酸轉胺酶 (ALT)', 'unit': 'U/L', 'min': 12.0, 'max': 130.0, 'cat': '肝實質功能', 'desc': '肝細胞急性受損指標，中毒或發炎時劇烈飆升'},
+    'AST': {'name': '天門冬胺酸轉胺酶 (AST)', 'unit': 'U/L', 'min': 0.0, 'max': 48.0, 'cat': '肝臟/肌肉', 'desc': '肝細胞或心肌、骨骼肌受損時上升'},
     'ALP': {'name': '鹼性磷酸酶 (ALP / ALKP)', 'unit': 'U/L', 'min': 14.0, 'max': 111.0, 'cat': '膽道/肝臟', 'desc': '貓咪半衰期極短，輕微上升即代表顯著肝膽鬱滯'},
     'TBIL': {'name': '總膽紅素 (Total Bilirubin)', 'unit': 'mg/dL', 'min': 0.0, 'max': 0.4, 'cat': '肝膽溶血', 'desc': '黃疸指標，過高需注意溶血或膽管阻塞'},
     'TP': {'name': '總蛋白質 (Total Protein)', 'unit': 'g/dL', 'min': 5.7, 'max': 8.9, 'cat': '血清蛋白', 'desc': '反映脫水（偏高）或蛋白流失/營養不良（偏低）'},
     'ALB': {'name': '白蛋白 (Albumin)', 'unit': 'g/dL', 'min': 2.3, 'max': 3.9, 'cat': '膠體滲透壓', 'desc': '肝臟製造的重要蛋白，過低易產生水腫或腹水'},
     'K': {'name': '鉀離子 (Potassium)', 'unit': 'mmol/L', 'min': 3.5, 'max': 5.8, 'cat': '核心離子', 'desc': '⚠️ >6.5 具心臟驟停致命風險；<3.2 會引發無力垂頭'},
     'HCT': {'name': '血容比 (HCT / PCV)', 'unit': '%', 'min': 30.0, 'max': 45.0, 'cat': '紅血球計數', 'desc': '貧血指標，慢性腎病常因紅血球生成素不足引發非再生性貧血'},
-    'WBC': {'name': '白血球總數 (WBC)', 'unit': '10^9/L', 'min': 5.5, 'max': 19.5, 'cat': '免疫發炎', 'desc': '發炎反應、感染或緊迫之白血球計數指標'}
+    'HGB': {'name': '血紅素 (HGB)', 'unit': 'g/dL', 'min': 8.0, 'max': 15.0, 'cat': '血液常規', 'desc': '紅血球攜氧蛋白濃度，評估貧血程度'},
+    'WBC': {'name': '白血球總數 (WBC)', 'unit': '10^9/L', 'min': 5.5, 'max': 19.5, 'cat': '免疫發炎', 'desc': '發炎反應、感染或緊迫之白血球計數指標'},
+    'RBC': {'name': '紅血球計數 (RBC)', 'unit': '10^12/L', 'min': 5.0, 'max': 10.0, 'cat': '血液常規', 'desc': '紅血球數量指標'},
+    'PLT': {'name': '血小板計數 (PLT)', 'unit': '10^9/L', 'min': 200.0, 'max': 600.0, 'cat': '凝血機能', 'desc': '凝血機能指標'}
 }
 
 def extract_text_from_pdf(pdf_path):
-    """Extract and decode text from PDF streams (handling ASCII85Decode, FlateDecode, and UTF-16BE / UTF-8)."""
+    """Accurately extract text streams from PDF, handling ASCII85Decode, FlateDecode, and pure UTF-16-BE strings."""
     try:
         with open(pdf_path, 'rb') as f:
             content = f.read()
@@ -50,8 +55,7 @@ def extract_text_from_pdf(pdf_path):
                 if not stream_data.startswith(b'<~'): stream_data = b'<~' + stream_data
                 if not stream_data.endswith(b'~>'): stream_data = stream_data + b'~>'
                 try:
-                    a85 = base64.a85decode(stream_data, adobe=True)
-                    dec = zlib.decompress(a85)
+                    dec = zlib.decompress(base64.a85decode(stream_data, adobe=True))
                 except Exception:
                     pass
             elif b'FlateDecode' in obj:
@@ -61,45 +65,69 @@ def extract_text_from_pdf(pdf_path):
                     pass
 
             if dec:
-                chunks = re.findall(rb'\(((?:[^()\\]|\\.)*)\)', dec)
-                for c in chunks:
-                    raw = re.sub(rb'\\([0-7]{1,3})', lambda m: bytes([int(m.group(1), 8)]), c)
+                # Find all text strings inside parentheses
+                matches = re.findall(rb'(\((?:[^()\\]|\\.)*\))\s*Tj', dec, re.DOTALL)
+                for m in matches:
+                    raw = re.sub(rb'\\([0-7]{1,3})', lambda x: bytes([int(x.group(1), 8)]), m[1:-1])
                     raw = raw.replace(b'\\(', b'(').replace(b'\\)', b')').replace(b'\\\\', b'\\')
-                    if b'\x00' in raw:
+                    
+                    # Decoders priority: UTF-16-BE (Native for Adobe-CNS1 / UniCNS) -> UTF-8 -> Latin1
+                    decoded = None
+                    try:
+                        decoded = raw.decode('utf-16-be')
+                    except Exception:
                         try:
-                            u16 = raw.decode('utf-16-be', errors='ignore')
-                            if u16.strip(): extracted_lines.append(u16.strip())
+                            decoded = raw.decode('utf-8')
                         except Exception:
-                            pass
-                    else:
-                        try:
-                            txt = raw.decode('utf-8', errors='ignore')
-                            if txt.strip(): extracted_lines.append(txt.strip())
-                        except Exception:
-                            pass
+                            decoded = raw.decode('latin1', errors='ignore')
 
-    raw_ascii = re.findall(r'[A-Za-z0-9\.\:\,\s\-\_\%\/\(\)]{2,}', content.decode('latin1', errors='ignore'))
-    combined = "\n".join(extracted_lines) + "\n" + "\n".join(raw_ascii)
-    return combined
+                    if decoded and decoded.strip():
+                        extracted_lines.append(decoded.strip())
+
+    return "\n".join(extracted_lines)
 
 def parse_report_text(text, fallback_name="愛貓"):
     data = {}
     
-    # Metadata extraction
-    name_match = re.search(r'(?:個案編號|案例|Patient\s*Name|Patient|Cat\s*Name|病患姓名|貓咪姓名)[\s\:\：\｜]+([^\r\n\,\;]+?)(?:\s+(?:Species|Age|Sex|Date|年齡|物種|性別)|$)', text, re.IGNORECASE)
-    if name_match and len(name_match.group(1).strip()) > 0:
-        data['cat_name'] = name_match.group(1).strip()
+    # 1. Cat Name extraction
+    name_match = re.search(r'(?:貓咪名稱|貓咪姓名|病患姓名|Patient\s*Name|Patient|Cat\s*Name)[\s\:\：\｜]+([^\r\n\,\;]+)', text, re.IGNORECASE)
+    case_id_match = re.search(r'(?:個案編號|案例)[\s\:\：\｜]+([^\r\n\,\;]+)', text, re.IGNORECASE)
+    
+    cat_real_name = name_match.group(1).strip() if name_match else ""
+    case_id = case_id_match.group(1).strip() if case_id_match else ""
+    
+    if cat_real_name and case_id:
+        data['cat_name'] = f"{cat_real_name} ({case_id})"
+    elif cat_real_name:
+        data['cat_name'] = cat_real_name
+    elif case_id:
+        data['cat_name'] = f"個案 {case_id}"
     else:
-        # Check filename fallback
-        data['cat_name'] = fallback_name.replace("貓咪健檢_", "").replace(".pdf", "")
+        clean_fallback = fallback_name.replace("貓咪健檢_", "").replace(".pdf", "").replace(".txt", "")
+        data['cat_name'] = clean_fallback
 
+    # 2. Age, Sex & Test Date
     age_match = re.search(r'(?:年齡|Age)[\s\:\：\n]+([0-9\.]+\s*(?:歲|yr|years|months|月)?)', text, re.IGNORECASE)
     data['cat_age'] = age_match.group(1).strip() if age_match else "保密"
+
+    sex_match = re.search(r'(?:性別|Sex)[\s\:\：\n]+([^\r\n]+)', text, re.IGNORECASE)
+    data['cat_sex'] = sex_match.group(1).strip() if sex_match else "未註明"
 
     date_match = re.search(r'(?:採檢日期|檢驗日期|Date)[\s\:\：\n]+([0-9]{4}[\-\/\.][0-9]{1,2}[\-\/\.][0-9]{1,2})', text, re.IGNORECASE)
     data['test_date'] = date_match.group(1).strip() if date_match else datetime.now().strftime('%Y-%m-%d')
 
-    # Regex patterns supporting both inline and multiline layout
+    # 3. Clinical Scenario / Case Description
+    scenario_match = re.search(r'(?:情境|主訴|Reason|Scenario)[\s\:\：\n]+([^\r\n]+)', text, re.IGNORECASE)
+    data['scenario'] = scenario_match.group(1).strip() if scenario_match else "例行健康檢查"
+
+    # 4. Hospital Interpretation & Recommendations
+    vet_note_match = re.search(r'(?:04｜模擬獸醫判讀|獸醫判讀|醫師判讀|Doctor\s*Note)[\s\:\：\n]+([^\r\n]+(?:\n[^\r\n0-9]+)?)', text, re.IGNORECASE)
+    data['vet_note'] = vet_note_match.group(1).strip() if vet_note_match else ""
+
+    vet_advice_match = re.search(r'(?:05｜建議追蹤與處置|建議處置|追蹤建議|Recommendation)[\s\:\：\n]+([^\r\n]+(?:\n[^\r\n0-9]+)?)', text, re.IGNORECASE)
+    data['vet_advice'] = vet_advice_match.group(1).strip() if vet_advice_match else ""
+
+    # 5. Numerical Lab Metrics
     patterns = {
         'CREA': r'(?:CREA|Creatinine|肌酸酐)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
         'BUN': r'(?:BUN|Urea|尿素氮)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
@@ -109,13 +137,17 @@ def parse_report_text(text, fallback_name="愛貓"):
         'GLU': r'(?:GLU|Glucose|血糖)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
         'FRUCT': r'(?:FRUCT|Fructosamine|果糖胺)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
         'ALT': r'(?:ALT|GPT)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
+        'AST': r'(?:AST|GOT)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
         'ALP': r'(?:ALP|ALKP|鹼性磷酸酶)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
         'TBIL': r'(?:TBIL|Total Bilirubin|總膽紅素)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
         'TP': r'(?:TP|Total Protein|總蛋白)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
         'ALB': r'(?:ALB|Albumin|白蛋白)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
         'K': r'(?:K\+|Potassium|鉀離子|鉀)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
         'HCT': r'(?:HCT|PCV|血容比)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
-        'WBC': r'(?:WBC|白血球)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)'
+        'HGB': r'(?:HGB|血紅素)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
+        'WBC': r'(?:WBC|白血球)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
+        'RBC': r'(?:RBC|紅血球)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)',
+        'PLT': r'(?:PLT|血小板)(?:\s*\([^\)]*\))?[\s\:\：\=\n]+([0-9]+\.?[0-9]*)'
     }
 
     metrics = {}
@@ -247,7 +279,11 @@ def evaluate_metrics(data):
 def generate_html_report(data, eval_result, output_path):
     cat_name = data.get('cat_name', '愛貓')
     cat_age = data.get('cat_age', '保密')
+    cat_sex = data.get('cat_sex', '未註明')
     test_date = data.get('test_date', datetime.now().strftime('%Y-%m-%d'))
+    scenario = data.get('scenario', '例行健康檢查')
+    vet_note = data.get('vet_note', '')
+    vet_advice = data.get('vet_advice', '')
 
     red_flag_html = ""
     if eval_result['red_flags']:
@@ -262,6 +298,17 @@ def generate_html_report(data, eval_result, output_path):
         for w in eval_result['warnings']:
             warning_html += f'<li>{w}</li>'
         warning_html += '</ul></div>'
+
+    # Hospital Original Notes Block
+    hospital_notes_html = ""
+    if vet_note or vet_advice:
+        hospital_notes_html = f"""
+        <div class="speech-bubble" style="background:#F0F9FF; border-color:#0284C7;">
+          <h2 style="color:#0369A1;">🏥 原廠醫院檢驗單判讀與處置備註</h2>
+          {f'<p style="margin-bottom:8px; font-weight:800; color:#1E293B;"><b>【模擬獸醫判讀】：</b>{vet_note}</p>' if vet_note else ''}
+          {f'<p style="font-weight:700; color:#334155;"><b>【建議追蹤處置】：</b>{vet_advice}</p>' if vet_advice else ''}
+        </div>
+        """
 
     rows_html = ""
     for ev in eval_result['evaluations']:
@@ -376,7 +423,7 @@ def generate_html_report(data, eval_result, output_path):
     }}
 
     .hero-title h1 {{
-      font-size: 2rem;
+      font-size: 2.1rem;
       font-weight: 900;
       color: var(--border-dark);
       letter-spacing: 0.02em;
@@ -387,7 +434,7 @@ def generate_html_report(data, eval_result, output_path):
 
     .hero-tags {{
       display: flex;
-      gap: 10px;
+      gap: 8px;
       margin-top: 8px;
       flex-wrap: wrap;
     }}
@@ -398,7 +445,7 @@ def generate_html_report(data, eval_result, output_path):
       padding: 3px 12px;
       border-radius: 999px;
       font-size: 0.85rem;
-      font-weight: 700;
+      font-weight: 800;
       box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
     }}
 
@@ -557,7 +604,6 @@ def generate_html_report(data, eval_result, output_path):
       box-shadow: var(--shadow-sm);
     }}
 
-    /* Row Tint Colors */
     .row-ok td {{ background: #FAFFFC; }}
     .row-warn td {{ background: #FFFCF2; border-color: #FFE6A7; }}
     .row-danger td {{ background: #FFF5F7; border-color: #FFCCD5; }}
@@ -578,7 +624,6 @@ def generate_html_report(data, eval_result, output_path):
     .metric-ref {{ font-size: 0.88rem; color: #495057; font-weight: 700; }}
     .metric-desc {{ font-size: 0.82rem; color: #6C757D; line-height: 1.4; }}
 
-    /* Badges (Anime Pills) */
     .badge {{
       display: inline-flex;
       align-items: center;
@@ -595,7 +640,6 @@ def generate_html_report(data, eval_result, output_path):
     .badge-warn {{ background: var(--yellow); color: #723D46; }}
     .badge-danger {{ background: #FF4D6D; color: #FFFFFF; }}
 
-    /* Advice Cards (Anime Comic Grid) */
     .advice-grid {{
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -628,7 +672,6 @@ def generate_html_report(data, eval_result, output_path):
       color: #333;
     }}
 
-    /* Footer */
     .footer {{
       text-align: center;
       margin-top: 40px;
@@ -659,8 +702,9 @@ def generate_html_report(data, eval_result, output_path):
           <h1>{cat_name} 的健康檢驗分析書 🐾</h1>
           <div class="hero-tags">
             <span class="hero-tag-item">🎂 年齡：{cat_age}</span>
-            <span class="hero-tag-item">📅 健檢日期：{test_date}</span>
-            <span class="hero-tag-item">⭐ 守護系統：LLM-Wiki</span>
+            <span class="hero-tag-item">⚧ 性別：{cat_sex}</span>
+            <span class="hero-tag-item">📅 採檢日期：{test_date}</span>
+            <span class="hero-tag-item">📋 檢驗情境：{scenario}</span>
           </div>
         </div>
       </div>
@@ -674,6 +718,9 @@ def generate_html_report(data, eval_result, output_path):
     <!-- Alert Boxes -->
     {red_flag_html}
     {warning_html}
+
+    <!-- Original Hospital Interpretation & Recommendations -->
+    {hospital_notes_html}
 
     <!-- Anime Speech Box: Clinical Insight -->
     <div class="speech-bubble">
@@ -750,7 +797,9 @@ def process_file(file_path, output_dir="html_reports"):
     data = parse_report_text(text, fallback_name=base_name)
     eval_result = evaluate_metrics(data)
     generated = generate_html_report(data, eval_result, out_html_path)
-    print(f" [OK] {file_path} -> {generated} (Cat: {data.get('cat_name')} | Stage: {eval_result['iris_stage']})")
+    print(f" [OK] {file_path} -> {generated}")
+    print(f"      • 愛貓姓名：{data.get('cat_name')} | 年齡：{data.get('cat_age')} | 性別：{data.get('cat_sex')}")
+    print(f"      • 診斷評估：{eval_result['iris_stage']}")
     return generated
 
 def batch_process(input_dir="pdf_reports", output_dir="html_reports"):
@@ -764,7 +813,7 @@ def batch_process(input_dir="pdf_reports", output_dir="html_reports"):
         return
 
     print("=" * 65)
-    print(f" 📂 正在以【動漫明亮清爽風】重新編譯 '{input_dir}' 至 '{output_dir}'...")
+    print(f" 📂 正在以【精準 UTF-16-BE 中文解析引擎】批次轉換 '{input_dir}' 至 '{output_dir}'...")
     print("=" * 65)
 
     count = 0
@@ -774,7 +823,7 @@ def batch_process(input_dir="pdf_reports", output_dir="html_reports"):
             count += 1
 
     print("=" * 65)
-    print(f"✅ 完成！共重新生成 {count} 份動漫風 HTML 報告至: {output_dir}")
+    print(f"✅ 批次轉換完成！共生成 {count} 份清晰動漫風 HTML 報告至: {output_dir}")
 
 def main():
     if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] in ['--batch', '-b']):

@@ -61,3 +61,12 @@ This log is an append-only, parseable chronological record of all Wiki operation
   - `wiki/貓咪口腔疾病與齒吸收_FORL.md`
   - `wiki/貓心肌肥大_HCM與主動脈血栓.md`
 - Cross-linked with Index, Emergency Red Flags, and Lab Benchmarks.
+
+## [2026-11-19 00:54] fix | PDF Chinese Font UTF-16-BE Decoding & HTML Report Refresh
+- Diagnosed PDF Chinese font extraction issue: `貓咪健檢_C02_疑似慢性腎臟病.pdf` and `貓咪健檢_C03_疑似糖尿病.pdf` use `/Type0` font `/F2` (`UniCNS-UTF16-H`), which encodes all 2-byte Chinese characters in big-endian UTF-16 without zero bytes in intermediate ASCII ranges.
+- Upgraded `tools/health_report_analyzer.py` stream parser with intelligent UTF-16-BE font-aware decoding.
+- Accurately extracted patient metadata:
+  - C02: 栗子 (10 歲, 公／已結紮, 情境：腎功能異常／疑似慢性腎臟病) -> IRIS Stage 3
+  - C03: 奶茶 (8 歲, 母／已結紮, 情境：持續性高血糖／疑似糖尿病) -> 糖尿病高度疑慮 (GLU 326 mg/dL, FRUCT 492 μmol/L)
+- Fully extracted and integrated Page 2 hospital interpretations and follow-up recommendations into the HTML reports.
+- Synchronized presentation files (`presentation/cat_health_guide.html`, `presentation/教學大綱.html`, `index.html`).
