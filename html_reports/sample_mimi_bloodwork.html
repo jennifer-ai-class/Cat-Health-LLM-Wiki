@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>🐾【sample_mimi_bloodwork】喵星人專屬健檢解析書・LLM-Wiki</title>
+  <title>🐾【Mimi】喵星人專屬健檢解析書・LLM-Wiki</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800;900&family=Quicksand:wght@600;700&display=swap');
 
@@ -139,7 +139,7 @@
     .iris-status-val {
       font-size: 1.45rem;
       font-weight: 900;
-      color: #10B981;
+      color: #FFB703;
       margin-top: 4px;
     }
 
@@ -368,11 +368,11 @@
       <div class="cat-avatar-group">
         <div class="cat-avatar">🐱</div>
         <div class="hero-title">
-          <h1>sample_mimi_bloodwork 的健康檢驗分析書 🐾</h1>
+          <h1>Mimi 的健康檢驗分析書 🐾</h1>
           <div class="hero-tags">
-            <span class="hero-tag-item">🎂 年齡：保密</span>
-            <span class="hero-tag-item">⚧ 性別：未註明</span>
-            <span class="hero-tag-item">📅 採檢日期：2026-11-19</span>
+            <span class="hero-tag-item">🎂 年齡：11 歲 (11 yr)</span>
+            <span class="hero-tag-item">⚧ 性別：公／已結紮 (Male / Castrated)</span>
+            <span class="hero-tag-item">📅 採檢日期：2026-11-15</span>
             <span class="hero-tag-item">📋 檢驗情境：例行健康檢查</span>
           </div>
         </div>
@@ -380,22 +380,22 @@
 
       <div class="iris-status-card">
         <div class="iris-status-label">核心臨床評估狀態</div>
-        <div class="iris-status-val">HEALTHY 🐾</div>
+        <div class="iris-status-val">STAGE 2 🐾</div>
       </div>
     </div>
 
     <!-- Alert Boxes -->
     
-    
+    <div class="comic-box box-warn"><div class="box-title">⚠️ 重點健康警示與日常追蹤</div><ul><li>⚠️ 【輕度腎功能受損】處於 IRIS 第 2 期，建議增加濕食比例並定期監測血壓與蛋白尿。</li></ul></div>
 
     <!-- Original Hospital Interpretation & Recommendations -->
     
 
     <!-- Anime Speech Box: Clinical Insight -->
     <div class="speech-bubble">
-      <h2>🩺 獸醫小精靈的臨床解讀：【健康平穩 / 正常狀態】</h2>
+      <h2>🩺 獸醫小精靈的臨床解讀：【IRIS Stage 2 (輕度慢性腎衰退)】</h2>
       <p class="speech-text">
-        目前各項主要指標維持良好，繼續保持充足水分與均衡營養！
+        腎功能保留約 25%~33%，早期常見多渴多尿，建議引進早期腎處方主食並定期監控血磷。
       </p>
     </div>
 
@@ -403,7 +403,7 @@
     <div class="table-container">
       <div class="table-header-row">
         <h2>📊 實驗室生化檢驗清單 (明亮清晰版)</h2>
-        <span style="font-size:0.85rem; font-weight:800; color:var(--text-muted);">共檢測 0 項指標</span>
+        <span style="font-size:0.85rem; font-weight:800; color:var(--text-muted);">共檢測 7 項指標</span>
       </div>
 
       <table>
@@ -418,7 +418,112 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td colspan="6" style="text-align:center; padding:30px;">未提取到生化指標</td></tr>
+          
+        <tr class="row-ok">
+          <td>
+            <div class="metric-name">CREA</div>
+            <div class="metric-sub">肌酸酐 (Creatinine)</div>
+          </td>
+          <td><span class="cat-pill">腎臟過濾</span></td>
+          <td>
+            <span class="metric-val">2.4</span>
+            <span class="metric-unit">mg/dL</span>
+          </td>
+          <td class="metric-ref">0.8 ~ 2.4 mg/dL</td>
+          <td><span class="badge badge-ok">正常 OK 🐾</span></td>
+          <td class="metric-desc">腎元濾過率指標，偏高代表腎功能衰退或脫水</td>
+        </tr>
+        
+        <tr class="row-warn">
+          <td>
+            <div class="metric-name">BUN</div>
+            <div class="metric-sub">血液尿素氮 (BUN)</div>
+          </td>
+          <td><span class="cat-pill">腎臟代謝</span></td>
+          <td>
+            <span class="metric-val">42.0</span>
+            <span class="metric-unit">mg/dL</span>
+          </td>
+          <td class="metric-ref">16.0 ~ 36.0 mg/dL</td>
+          <td><span class="badge badge-warn">偏高 ↑</span></td>
+          <td class="metric-desc">體內含氮廢物，過高會造成尿毒噁心與食慾不振</td>
+        </tr>
+        
+        <tr class="row-danger">
+          <td>
+            <div class="metric-name">SDMA</div>
+            <div class="metric-sub">對稱二甲基精胺酸</div>
+          </td>
+          <td><span class="cat-pill">早期腎篩</span></td>
+          <td>
+            <span class="metric-val">19.5</span>
+            <span class="metric-unit">μg/dL</span>
+          </td>
+          <td class="metric-ref">0.0 ~ 14.0 μg/dL</td>
+          <td><span class="badge badge-danger">偏高 ↑</span></td>
+          <td class="metric-desc">超靈敏指標！腎功能受損 25%~40% 即提前升高</td>
+        </tr>
+        
+        <tr class="row-ok">
+          <td>
+            <div class="metric-name">PHOS</div>
+            <div class="metric-sub">血清無機磷 (Phosphorus)</div>
+          </td>
+          <td><span class="cat-pill">電解質/腎</span></td>
+          <td>
+            <span class="metric-val">4.8</span>
+            <span class="metric-unit">mg/dL</span>
+          </td>
+          <td class="metric-ref">3.1 ~ 7.5 mg/dL</td>
+          <td><span class="badge badge-ok">正常 OK 🐾</span></td>
+          <td class="metric-desc">高血磷會加速腎病惡化，腎貓須嚴格控磷</td>
+        </tr>
+        
+        <tr class="row-warn">
+          <td>
+            <div class="metric-name">USG</div>
+            <div class="metric-sub">尿比重 (USG)</div>
+          </td>
+          <td><span class="cat-pill">尿液濃縮</span></td>
+          <td>
+            <span class="metric-val">1.022</span>
+            <span class="metric-unit"></span>
+          </td>
+          <td class="metric-ref">1.035 ~ 1.06 </td>
+          <td><span class="badge badge-warn">偏低 ↓</span></td>
+          <td class="metric-desc">正常應 >1.035，偏低代表腎臟濃縮水分機能減退</td>
+        </tr>
+        
+        <tr class="row-ok">
+          <td>
+            <div class="metric-name">ALT</div>
+            <div class="metric-sub">丙胺酸轉胺酶 (ALT)</div>
+          </td>
+          <td><span class="cat-pill">肝實質功能</span></td>
+          <td>
+            <span class="metric-val">58.0</span>
+            <span class="metric-unit">U/L</span>
+          </td>
+          <td class="metric-ref">12.0 ~ 130.0 U/L</td>
+          <td><span class="badge badge-ok">正常 OK 🐾</span></td>
+          <td class="metric-desc">肝細胞急性受損指標，中毒或發炎時劇烈飆升</td>
+        </tr>
+        
+        <tr class="row-warn">
+          <td>
+            <div class="metric-name">K</div>
+            <div class="metric-sub">鉀離子 (Potassium)</div>
+          </td>
+          <td><span class="cat-pill">核心離子</span></td>
+          <td>
+            <span class="metric-val">3.4</span>
+            <span class="metric-unit">mmol/L</span>
+          </td>
+          <td class="metric-ref">3.5 ~ 5.8 mmol/L</td>
+          <td><span class="badge badge-warn">偏低 ↓</span></td>
+          <td class="metric-desc">⚠️ >6.5 具心臟驟停致命風險；<3.2 會引發無力垂頭</td>
+        </tr>
+        
         </tbody>
       </table>
     </div>

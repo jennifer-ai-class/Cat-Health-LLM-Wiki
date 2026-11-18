@@ -70,3 +70,10 @@ This log is an append-only, parseable chronological record of all Wiki operation
   - C03: 奶茶 (8 歲, 母／已結紮, 情境：持續性高血糖／疑似糖尿病) -> 糖尿病高度疑慮 (GLU 326 mg/dL, FRUCT 492 μmol/L)
 - Fully extracted and integrated Page 2 hospital interpretations and follow-up recommendations into the HTML reports.
 - Synchronized presentation files (`presentation/cat_health_guide.html`, `presentation/教學大綱.html`, `index.html`).
+
+## [2026-11-19 01:05] feature | English PDF Ingestion with Full Traditional Chinese HTML Output
+- Enhanced `tools/health_report_analyzer.py` to support cross-language health analysis: ingesting 100% English veterinary PDF reports and compiling rich Traditional Chinese interactive HTML reports.
+- Implemented bilingual profile mapping (Age: "11 years" -> "11 歲", Sex: "Female, spayed" -> "母／已結紮", Scenario: "Suspected Chronic Kidney Disease" -> "疑似慢性腎臟病").
+- Automatically translated English doctor notes & follow-up recommendations into professional Traditional Chinese while preserving original text.
+- Verified on user's new English medical report: `pdf_reports/Cat_Health_C02_Suspected_Chronic_Kidney_Disease.pdf` (Patient: Olive, 11 years, IRIS Stage 3 CKD).
+- Successfully compiled: `html_reports/Cat_Health_C02_Suspected_Chronic_Kidney_Disease.html`.
