@@ -1,0 +1,81 @@
+%PDF-1.4
+1 0 obj
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+  /Type /Pages
+  /Kids [3 0 R]
+  /Count 1
+>>
+endobj
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 612 792]
+  /Resources <<
+    /Font <<
+      /F1 <<
+        /Type /Font
+        /Subtype /Type1
+        /BaseFont /Helvetica
+      >>
+    >>
+  >>
+  /Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+  /Length 350
+>>
+stream
+BT
+/F1 14 Tf
+50 720 Td
+(VET HEALTH LAB - FELINE BLOODWORK REPORT) Tj
+/F1 11 Tf
+0 -30 Td
+(Patient Name: Mimi) Tj
+0 -20 Td
+(Species: Feline Age: 11 yr Sex: MN) Tj
+0 -20 Td
+(Test Date: 2026-11-15) Tj
+0 -30 Td
+(CLINICAL METRICS:) Tj
+0 -20 Td
+(CREA: 2.4 mg/dL) Tj
+0 -20 Td
+(BUN: 42.0 mg/dL) Tj
+0 -20 Td
+(SDMA: 19.5) Tj
+0 -20 Td
+(PHOS: 4.8 mg/dL) Tj
+0 -20 Td
+(USG: 1.022) Tj
+0 -20 Td
+(ALT: 58.0 U/L) Tj
+0 -20 Td
+(K: 3.4 mmol/L) Tj
+ET
+endstream
+endobj
+xref
+0 5
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000287 00000 n 
+trailer
+<<
+  /Size 5
+  /Root 1 0 R
+>>
+startxref
+700
+%%EOF

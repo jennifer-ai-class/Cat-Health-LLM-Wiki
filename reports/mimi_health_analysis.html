@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>【咪咪 (Mimi)】健檢報告智能判讀與照護分析 — LLM-Wiki</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .title-group h1 {
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+    .meta-tags {
+      display: flex;
+      gap: 15px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .stage-card {
+      background: #0f172a;
+      border: 2px solid #f59e0b;
+      border-radius: 12px;
+      padding: 16px 24px;
+      text-align: right;
+    }
+    .stage-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+    .stage-val { font-size: 1.3rem; font-weight: 800; color: #f59e0b; }
+
+    .alert-box {
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .alert-danger h3 { color: #ef4444; margin-bottom: 8px; }
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fde68a;
+    }
+    .alert-warning h3 { color: #f59e0b; margin-bottom: 8px; }
+    .alert-box ul { padding-left: 20px; }
+
+    .content-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 25px;
+    }
+    .content-card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 18px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
+    
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .badge-success { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid #10b981; }
+    .badge-warning { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid #f59e0b; }
+    .badge-danger { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid #ef4444; }
+
+    .advice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 15px;
+    }
+    .advice-item {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .advice-item h4 {
+      color: #fff;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+    .advice-item p {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 30px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header -->
+    <div class="header-card">
+      <div class="title-group">
+        <h1>🐾 貓咪健檢生化智能解讀分析報告</h1>
+        <div class="meta-tags">
+          <span>愛貓姓名：<b>咪咪 (Mimi)</b></span>
+          <span>年齡：<b>11 歲</b></span>
+          <span>檢驗日期：<b>2026-11-15</b></span>
+        </div>
+      </div>
+      <div class="stage-card">
+        <div class="stage-label">IRIS 腎臟分期評估</div>
+        <div class="stage-val">IRIS Stage 2 </div>
+      </div>
+    </div>
+
+    <!-- Alert Boxes -->
+    
+    <div class="alert-box alert-warning"><h3>⚠️ 重點追蹤與健康建議</h3><ul><li>⚠️ 處於 IRIS 第 2 期輕度腎病，請密切注意飲水量並定期監控血磷與血壓。</li></ul></div>
+
+    <!-- IRIS Interpretation Card -->
+    <div class="content-card">
+      <h2>🩺 國際 IRIS 腎功能綜合分期解讀</h2>
+      <p style="font-size: 1.05rem; margin-bottom: 10px;">
+        當前評估結論：<b style="color: #f59e0b;">IRIS Stage 2 (輕度慢性腎病)</b>
+      </p>
+      <p style="color: #cbd5e1; font-size: 0.95rem;">
+        腎功能保留率 25%~33%，早期多渴多尿症狀，建議介入早期腎病處方糧與補水管理。
+      </p>
+    </div>
+
+    <!-- Lab Metrics Table -->
+    <div class="content-card">
+      <h2>📊 血液生化與實驗室數值對照表</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>檢驗項目代碼</th>
+            <th>檢驗數值 (Value)</th>
+            <th>標準參考區間 (Reference)</th>
+            <th>狀態判定</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        <tr>
+          <td><b>SDMA</b><br><span style="color:#94a3b8; font-size:0.8rem;">對稱二甲基精胺酸 (SDMA)</span></td>
+          <td style="font-size:1.1rem; font-weight:700;">19.5 <span style="font-size:0.8rem; font-weight:normal; color:#94a3b8;">μg/dL</span></td>
+          <td style="color:#94a3b8;">0.0 ~ 14.0 μg/dL</td>
+          <td><span class="badge badge-danger">偏高 ↑</span></td>
+        </tr>
+        
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Home Care Guidance -->
+    <div class="content-card">
+      <h2>💡 飼主居家照護與就醫回診指引</h2>
+      <div class="advice-grid">
+        <div class="advice-item">
+          <h4>💧 飲水與飲食管理</h4>
+          <p>提高主食罐等濕食比例。若處於腎病第 2 期以上，應評估轉為低磷早期腎臟處方糧，嚴格避免高磷零食或骨粉乾糧。</p>
+        </div>
+        <div class="advice-item">
+          <h4>🩺 建議就醫諮詢之問題</h4>
+          <p>攜帶本分析報告與獸醫師討論：是否需加測「血壓（SBP）」、「尿蛋白肌酸酐比（UPC）」以及是否需要規劃居家皮下輸液支持。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      本報告由 <b>LLM_Wiki 貓咪健康知識庫</b> 自動比對 IRIS 國際臨床指引編譯生成。<br>
+      僅供飼主日常照護理解參考，不可取代執業獸醫師之臨床確診與處方。
+    </div>
+
+  </div>
+
+</body>
+</html>
